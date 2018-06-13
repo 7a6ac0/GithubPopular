@@ -51,7 +51,7 @@ class PopularViewModel(
             githubRepository.refreshRepos()
         }
 
-        githubRepository.getRepos(searchQuery.get()!!, object : GithubDataSource.LoadReposCallback{
+        githubRepository.getRepos(searchQuery.get()!!.toLowerCase(), object : GithubDataSource.LoadReposCallback{
             override fun onReposLoaded(repos: List<Repo>) {
                 val reposToShow = repos
 

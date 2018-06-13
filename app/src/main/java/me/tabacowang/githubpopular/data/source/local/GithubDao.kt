@@ -1,9 +1,10 @@
 package me.tabacowang.githubpopular.data.source.local
 
 import android.arch.persistence.room.*
+import me.tabacowang.githubpopular.data.FavoriteRepo
 import me.tabacowang.githubpopular.data.Repo
 
-@Dao interface PopularDao {
+@Dao interface GithubDao {
     @Query("SELECT * FROM repos WHERE searchQuery = :searchQuery") fun getRepos(searchQuery: String): List<Repo>
 
     @Query("SELECT * FROM repos WHERE id = :repoId") fun getRepoById(repoId: String): Repo?
@@ -15,4 +16,12 @@ import me.tabacowang.githubpopular.data.Repo
     @Query("DELETE FROM repos WHERE id = :repoId") fun deleteRepoById(repoId: String): Int
 
     @Query("DELETE FROM repos") fun deleteRepos()
+
+    @Query("SELECT * from favorite_repos") fun getFavoriteRepo(): List<FavoriteRepo>
+
+    @Query("SELECT * from favorite_repos WHERE repoId = :favoriteRepoId") fun getFavoriteRepoById(favoriteRepoId: String): FavoriteRepo?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE) fun insertFavoriteRepo(favoriteRepo: FavoriteRepo)
+
+    @Query("DELETE FROM favorite_repos WHERE repoId = :favoriteRepoId") fun deleteFavoriteRepoById(favoriteRepoId: String)
 }

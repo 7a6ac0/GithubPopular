@@ -7,6 +7,6 @@ import java.util.*
         primaryKeys = ["_id"])
 data class FavoriteRepo(
         val _id: String = UUID.randomUUID().toString(),
-        val repo: Repo
+        val repoId: String
 ) {
 }

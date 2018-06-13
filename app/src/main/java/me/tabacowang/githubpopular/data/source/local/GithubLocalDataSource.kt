@@ -1,28 +1,29 @@
 package me.tabacowang.githubpopular.data.source.local
 
+import me.tabacowang.githubpopular.data.FavoriteRepo
 import me.tabacowang.githubpopular.data.Repo
 import me.tabacowang.githubpopular.data.source.GithubDataSource
 import me.tabacowang.githubpopular.util.AppExecutors
 
 class GithubLocalDataSource private constructor(
         val appExecutors: AppExecutors,
-        val popularDao: PopularDao
+        val githubDao: GithubDao
 ) : GithubDataSource {
 
     companion object {
         private var INSTANCE: GithubLocalDataSource? = null
 
         @JvmStatic
-        fun getInstance(appExecutors: AppExecutors, popularDao: PopularDao): GithubLocalDataSource =
+        fun getInstance(appExecutors: AppExecutors, githubDao: GithubDao): GithubLocalDataSource =
                 INSTANCE ?: synchronized(GithubLocalDataSource::class.java) {
-                    INSTANCE ?: GithubLocalDataSource(appExecutors, popularDao)
+                    INSTANCE ?: GithubLocalDataSource(appExecutors, githubDao)
                             .also { INSTANCE = it }
                 }
     }
 
     override fun getRepos(searchQuery: String, callback: GithubDataSource.LoadReposCallback) {
         appExecutors.diskIO.execute {
-            val repos = popularDao.getRepos(searchQuery).sortedByDescending { it.stars }
+            val repos = githubDao.getRepos(searchQuery).sortedByDescending { it.stars }
             appExecutors.mainThread.execute {
                 if (repos.isEmpty()) {
                     callback.onDataNotAvailable()
@@ -36,7 +37,7 @@ class GithubLocalDataSource private constructor(
 
     override fun getRepo(repoId: String, callback: GithubDataSource.GetRepoCallback) {
         appExecutors.diskIO.execute {
-            val repo = popularDao.getRepoById(repoId)
+            val repo = githubDao.getRepoById(repoId)
             appExecutors.mainThread.execute {
                 if (repo != null) {
                     callback.onRepoLoaded(repo)
@@ -48,17 +49,22 @@ class GithubLocalDataSource private constructor(
     }
 
     override fun saveRepo(repo: Repo) {
-        appExecutors.diskIO.execute { popularDao.insertRepo(repo) }
+        appExecutors.diskIO.execute {
+            val favoriteRepo: FavoriteRepo? = githubDao.getFavoriteRepoById(repo.id)
+            githubDao.insertRepo(repo.apply {
+                isFavorite = favoriteRepo != null
+            })
+        }
     }
 
     override fun refreshRepos() {
     }
 
     override fun deleteAllRepos() {
-        appExecutors.diskIO.execute { popularDao.deleteRepos() }
+        appExecutors.diskIO.execute { githubDao.deleteRepos() }
     }
 
     override fun deleteRepo(repoId: String) {
-        appExecutors.diskIO.execute { popularDao.deleteRepoById(repoId) }
+        appExecutors.diskIO.execute { githubDao.deleteRepoById(repoId) }
     }
 }

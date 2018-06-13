@@ -37,6 +37,8 @@ data class Repo(
 
     var searchQuery: String = ""
 
+    var isFavorite = false
+
     companion object {
         const val UNKNOWN_ID = -1
     }
