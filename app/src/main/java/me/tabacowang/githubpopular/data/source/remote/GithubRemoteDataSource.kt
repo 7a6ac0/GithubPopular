@@ -37,11 +37,19 @@ object GithubRemoteDataSource : GithubDataSource {
     }
 
     override fun getRepo(repoId: String, callback: GithubDataSource.GetRepoCallback) {
-        val repo = REPOS_SERVICE_DATA[repoId]
-        repo?.let { callback.onRepoLoaded(repo) }
+//        val repo = REPOS_SERVICE_DATA[repoId]
+//        repo?.let { callback.onRepoLoaded(repo) }
+    }
+
+    override fun getFavoriteRepos(callback: GithubDataSource.LoadFavoriteReposCallback) {
+
     }
 
     override fun saveRepo(repo: Repo) {
+
+    }
+
+    override fun updateFavoriteRepo(repoId: String, isFavorite: Boolean) {
 
     }
 
@@ -54,5 +62,13 @@ object GithubRemoteDataSource : GithubDataSource {
 
     override fun deleteRepo(repoId: String) {
         REPOS_SERVICE_DATA.remove(repoId)
+    }
+
+    override fun saveFavoriteRepo(repoId: String) {
+
+    }
+
+    override fun deleteFavoriteRepo(repoId: String) {
+
     }
 }

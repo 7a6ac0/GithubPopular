@@ -41,6 +41,16 @@ class PopularViewModel(
         loadRepos(forceUpdate, true)
     }
 
+    fun updateFavoriteRepo(repo: Repo, isFavorite: Boolean) {
+        if (isFavorite) {
+            githubRepository.saveFavoriteRepo(repo.id)
+        }
+        else {
+            githubRepository.deleteFavoriteRepo(repo.id)
+        }
+        repo.isFavorite = isFavorite
+    }
+
     private fun loadRepos(forceUpdate: Boolean, showLoadingUI: Boolean) {
         if (showLoadingUI) {
             dataLoading.set(true)

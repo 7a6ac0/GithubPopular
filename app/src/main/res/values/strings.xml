@@ -6,4 +6,6 @@
 
     <string name="no_repos">Sorry, there\'s no Repos!</string>
     <string name="repo_search">Search</string>
+    <string name="author">Author:</string>
+    <string name="stars">Stars:</string>
 </resources>

@@ -14,7 +14,8 @@ class GithubLocalDataSource private constructor(
         private var INSTANCE: GithubLocalDataSource? = null
 
         @JvmStatic
-        fun getInstance(appExecutors: AppExecutors, githubDao: GithubDao): GithubLocalDataSource =
+        fun getInstance(appExecutors: AppExecutors,
+                        githubDao: GithubDao): GithubLocalDataSource =
                 INSTANCE ?: synchronized(GithubLocalDataSource::class.java) {
                     INSTANCE ?: GithubLocalDataSource(appExecutors, githubDao)
                             .also { INSTANCE = it }
@@ -48,13 +49,30 @@ class GithubLocalDataSource private constructor(
         }
     }
 
+    override fun getFavoriteRepos(callback: GithubDataSource.LoadFavoriteReposCallback) {
+        appExecutors.diskIO.execute {
+            val favoriteRepo = githubDao.getFavoriteRepos()
+            appExecutors.mainThread.execute {
+                if (favoriteRepo.isEmpty()) {
+                    callback.onDataNotAvailable()
+                } else {
+                    callback.onFavoriteReposLoaded(favoriteRepo)
+                }
+            }
+        }
+    }
+
     override fun saveRepo(repo: Repo) {
         appExecutors.diskIO.execute {
-            val favoriteRepo: FavoriteRepo? = githubDao.getFavoriteRepoById(repo.id)
             githubDao.insertRepo(repo.apply {
+                val favoriteRepo: FavoriteRepo? = githubDao.getFavoriteRepoById(repo.id)
                 isFavorite = favoriteRepo != null
             })
         }
+    }
+
+    override fun updateFavoriteRepo(repoId: String, isFavorite: Boolean) {
+        appExecutors.diskIO.execute { githubDao.updateFavoriteRepo(repoId, isFavorite) }
     }
 
     override fun refreshRepos() {
@@ -66,5 +84,14 @@ class GithubLocalDataSource private constructor(
 
     override fun deleteRepo(repoId: String) {
         appExecutors.diskIO.execute { githubDao.deleteRepoById(repoId) }
+    }
+
+    override fun saveFavoriteRepo(repoId: String) {
+        val favoriteRepo = FavoriteRepo(repoId = repoId)
+        appExecutors.diskIO.execute { githubDao.insertFavoriteRepo(favoriteRepo) }
+    }
+
+    override fun deleteFavoriteRepo(repoId: String) {
+        appExecutors.diskIO.execute { githubDao.deleteFavoriteRepoById(repoId) }
     }
 }

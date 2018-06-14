@@ -13,11 +13,14 @@ import me.tabacowang.githubpopular.data.Repo
 
     @Update fun updateRepo(repo: Repo): Int
 
+    @Query("UPDATE repos SET isFavorite = :isFavorite WHERE id = :repoId")
+    fun updateFavoriteRepo(repoId: String, isFavorite: Boolean)
+
     @Query("DELETE FROM repos WHERE id = :repoId") fun deleteRepoById(repoId: String): Int
 
     @Query("DELETE FROM repos") fun deleteRepos()
 
-    @Query("SELECT * from favorite_repos") fun getFavoriteRepo(): List<FavoriteRepo>
+    @Query("SELECT * from favorite_repos") fun getFavoriteRepos(): List<FavoriteRepo>
 
     @Query("SELECT * from favorite_repos WHERE repoId = :favoriteRepoId") fun getFavoriteRepoById(favoriteRepoId: String): FavoriteRepo?
 

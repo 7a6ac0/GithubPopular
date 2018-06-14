@@ -54,24 +54,37 @@ class GithubRepository(
             }
 
             override fun onDataNotAvailable() {
-                githubRemoteDataSource.getRepo(repoId, object : GithubDataSource.GetRepoCallback {
-                    override fun onRepoLoaded(repo: Repo) {
-                        cacheAndPerform(repo) {
-                            callback.onRepoLoaded(it)
-                        }
-                    }
-
-                    override fun onDataNotAvailable() {
-                        callback.onDataNotAvailable()
-                    }
-                })
+//                githubRemoteDataSource.getRepo(repoId, object : GithubDataSource.GetRepoCallback {
+//                    override fun onRepoLoaded(repo: Repo) {
+//                        cacheAndPerform(repo) {
+//                            callback.onRepoLoaded(it)
+//                        }
+//                    }
+//
+//                    override fun onDataNotAvailable() {
+//                        callback.onDataNotAvailable()
+//                    }
+//                })
+                callback.onDataNotAvailable()
             }
         })
+    }
+
+    override fun getFavoriteRepos(callback: GithubDataSource.LoadFavoriteReposCallback) {
+
     }
 
     override fun saveRepo(repo: Repo) {
         // For test.
         // Not require to add a repo by user.
+    }
+
+    override fun updateFavoriteRepo(repoId: String, isFavorite: Boolean) {
+        getRepoWithId(repoId)?.let {
+            cacheAndPerform(it) {
+                githubLocalDataSource.updateFavoriteRepo(it.id, isFavorite)
+            }
+        }
     }
 
     override fun refreshRepos() {
@@ -90,12 +103,30 @@ class GithubRepository(
 //        cachedRepos.remove(repoId)
     }
 
+    override fun saveFavoriteRepo(repoId: String) {
+        githubLocalDataSource.saveFavoriteRepo(repoId)
+        updateFavoriteRepo(repoId, true)
+    }
+
+    override fun deleteFavoriteRepo(repoId: String) {
+        githubLocalDataSource.deleteFavoriteRepo(repoId)
+        updateFavoriteRepo(repoId, false)
+    }
+
     private fun getReposFromRemoteDataSource(searchQuery: String, callback: GithubDataSource.LoadReposCallback) {
         githubRemoteDataSource.getRepos(searchQuery, object : GithubDataSource.LoadReposCallback{
             override fun onReposLoaded(repos: List<Repo>) {
-                refreshCache(repos)
                 saveToLocalDataSource(repos)
-                callback.onReposLoaded(ArrayList(cachedRepos.values))
+                githubLocalDataSource.getRepos(searchQuery, object : GithubDataSource.LoadReposCallback {
+                    override fun onReposLoaded(repos: List<Repo>) {
+                        refreshCache(repos)
+                        callback.onReposLoaded(ArrayList(cachedRepos.values))
+                    }
+
+                    override fun onDataNotAvailable() {
+
+                    }
+                })
             }
 
             override fun onDataNotAvailable() {
@@ -122,7 +153,10 @@ class GithubRepository(
     private fun getRepoWithId(id: String) = cachedRepos[id]
 
     private inline fun cacheAndPerform(repo: Repo, perform: (Repo) -> Unit) {
-        val cachedRepo = Repo(repo.id, repo.name, repo.fullName, repo.description, repo.owner, repo.stars)
+        val cachedRepo = Repo(repo.id, repo.name, repo.fullName, repo.description, repo.owner, repo.stars).apply {
+            searchQuery = repo.searchQuery
+            isFavorite = repo.isFavorite
+        }
         cachedRepos[repo.id] = cachedRepo
         perform(cachedRepo)
     }
@@ -142,7 +176,7 @@ class GithubRepository(
          */
         @JvmStatic
         fun getInstance(githubRemoteDataSource: GithubDataSource,
-                                   githubLocalDataSource: GithubDataSource) =
+                        githubLocalDataSource: GithubDataSource) =
                 INSTANCE ?: synchronized(GithubRepository::class.java) {
                     INSTANCE ?: GithubRepository(githubRemoteDataSource, githubLocalDataSource)
                             .also { INSTANCE = it }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.ToggleButton
 import me.tabacowang.githubpopular.data.Repo
 import me.tabacowang.githubpopular.databinding.RepoItemBinding
 
@@ -39,6 +40,18 @@ class RepoAdapter(
                     }
                     is FavoriteViewModel -> {
                         viewModel.openRepoEvent.value = repo.id
+                    }
+                }
+            }
+
+            override fun onFavoriteChanged(repo: Repo, v: View) {
+                val checked = (v as ToggleButton).isChecked
+                when(viewModel) {
+                    is PopularViewModel -> {
+                        viewModel.updateFavoriteRepo(repo, checked)
+                    }
+                    is FavoriteViewModel -> {
+
                     }
                 }
             }
