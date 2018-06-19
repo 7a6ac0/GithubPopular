@@ -8,5 +8,4 @@ import java.util.*
 data class FavoriteRepo(
         val _id: String = UUID.randomUUID().toString(),
         val repoId: String
-) {
-}
+)

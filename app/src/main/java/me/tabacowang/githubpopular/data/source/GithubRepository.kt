@@ -1,6 +1,7 @@
 package me.tabacowang.githubpopular.data.source
 
 import me.tabacowang.githubpopular.data.Repo
+import me.tabacowang.githubpopular.data.RepoSearchResult
 import java.util.LinkedHashMap
 
 class GithubRepository(
@@ -16,23 +17,22 @@ class GithubRepository(
      */
     var cacheIsDirty = false
 
-    override fun getRepos(searchQuery: String, callback: GithubDataSource.LoadReposCallback) {
-//        if (cachedRepos.isNotEmpty() && !cacheIsDirty) {
-//            callback.onReposLoaded(ArrayList(cachedRepos.values))
-//            return
-//        }
-
+    override fun getRepos(searchQuery: String, page: Int, callback: GithubDataSource.LoadReposCallback) {
         if (cacheIsDirty) {
-            getReposFromRemoteDataSource(searchQuery, callback)
+            deleteRepo(searchQuery)
+            deleteSearchResult(searchQuery)
+            getReposFromRemoteDataSource(searchQuery, page, callback)
+        } else if (page > 1) {
+            getReposFromRemoteDataSource(searchQuery, page, callback)
         } else {
-            githubLocalDataSource.getRepos(searchQuery, object : GithubDataSource.LoadReposCallback {
+            githubLocalDataSource.getRepos(searchQuery, page, object : GithubDataSource.LoadReposCallback {
                 override fun onReposLoaded(repos: List<Repo>) {
                     refreshCache(repos)
                     callback.onReposLoaded(ArrayList(cachedRepos.values))
                 }
 
                 override fun onDataNotAvailable() {
-                    getReposFromRemoteDataSource(searchQuery, callback)
+                    getReposFromRemoteDataSource(searchQuery, page, callback)
                 }
             })
         }
@@ -97,10 +97,8 @@ class GithubRepository(
 //        cachedRepos.clear()
     }
 
-    override fun deleteRepo(repoId: String) {
-        // For test.
-//        githubLocalDataSource.deleteRepo(repoId)
-//        cachedRepos.remove(repoId)
+    override fun deleteRepo(searchQuery: String) {
+        githubLocalDataSource.deleteRepo(searchQuery)
     }
 
     override fun saveFavoriteRepo(repoId: String) {
@@ -113,11 +111,31 @@ class GithubRepository(
         updateFavoriteRepo(repoId, false)
     }
 
-    private fun getReposFromRemoteDataSource(searchQuery: String, callback: GithubDataSource.LoadReposCallback) {
-        githubRemoteDataSource.getRepos(searchQuery, object : GithubDataSource.LoadReposCallback{
+    override fun saveSearchResult(repoSearchResult: RepoSearchResult) {
+        githubLocalDataSource.saveSearchResult(repoSearchResult)
+    }
+
+    override fun getSearchResult(searchQuery: String, callback: GithubDataSource.GetSearchResultCallback) {
+        githubLocalDataSource.getSearchResult(searchQuery, object : GithubDataSource.GetSearchResultCallback {
+            override fun onResultLoaded(repoSearchResult: RepoSearchResult) {
+                callback.onResultLoaded(repoSearchResult)
+            }
+
+            override fun onDataNotAvailable() {
+                callback.onDataNotAvailable()
+            }
+        })
+    }
+
+    override fun deleteSearchResult(searchQuery: String) {
+        githubLocalDataSource.deleteSearchResult(searchQuery)
+    }
+
+    private fun getReposFromRemoteDataSource(searchQuery: String, page: Int, callback: GithubDataSource.LoadReposCallback) {
+        githubRemoteDataSource.getRepos(searchQuery, page, object : GithubDataSource.LoadReposCallback{
             override fun onReposLoaded(repos: List<Repo>) {
                 saveToLocalDataSource(repos)
-                githubLocalDataSource.getRepos(searchQuery, object : GithubDataSource.LoadReposCallback {
+                githubLocalDataSource.getRepos(searchQuery, page, object : GithubDataSource.LoadReposCallback {
                     override fun onReposLoaded(repos: List<Repo>) {
                         refreshCache(repos)
                         callback.onReposLoaded(ArrayList(cachedRepos.values))

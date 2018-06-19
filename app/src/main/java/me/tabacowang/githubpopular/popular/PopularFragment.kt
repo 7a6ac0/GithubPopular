@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import me.tabacowang.githubpopular.R
 import me.tabacowang.githubpopular.databinding.PopularFragmentBinding
 import me.tabacowang.githubpopular.util.obtainViewModel
@@ -41,7 +42,27 @@ class PopularFragment : Fragment() {
         val viewModel = popularFragmentBinding.viewmodel
         if (viewModel != null) {
             listAdapter = RepoAdapter(ArrayList(0), viewModel)
-            popularFragmentBinding.repoList.adapter = listAdapter
+            popularFragmentBinding.repoList.apply {
+                adapter = listAdapter
+                setOnScrollListener(object : AbsListView.OnScrollListener {
+                    override fun onScrollStateChanged(view: AbsListView, scrollState: Int) {
+                        when(scrollState) {
+                            AbsListView.OnScrollListener.SCROLL_STATE_IDLE -> {
+                                if(lastVisiblePosition == (count - 1)) {
+                                    viewModel.loadMoreRepos()
+                                }
+                            }
+                        }
+                    }
+
+                    override fun onScroll(view: AbsListView?,
+                                          firstVisibleItem: Int,
+                                          visibleItemCount: Int,
+                                          totalItemCount: Int) {
+
+                    }
+                })
+            }
         }
         else {
             Log.w(TAG, "ViewModel not initialized when attempting to set up adapter.")

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "88d99095888eba462f27c75eec95f708",
+    "identityHash": "3650cfc4b86f0f9b971a4a31f535db15",
     "entities": [
       {
         "tableName": "repos",
@@ -122,11 +122,37 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "repo_search_result",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`searchQuery` TEXT NOT NULL, `next` INTEGER, PRIMARY KEY(`searchQuery`))",
+        "fields": [
+          {
+            "fieldPath": "searchQuery",
+            "columnName": "searchQuery",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "next",
+            "columnName": "next",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "searchQuery"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"88d99095888eba462f27c75eec95f708\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"3650cfc4b86f0f9b971a4a31f535db15\")"
     ]
   }
 }

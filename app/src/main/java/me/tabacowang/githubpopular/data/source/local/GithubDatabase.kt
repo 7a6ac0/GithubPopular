@@ -6,8 +6,9 @@ import android.arch.persistence.room.RoomDatabase
 import android.content.Context
 import me.tabacowang.githubpopular.data.FavoriteRepo
 import me.tabacowang.githubpopular.data.Repo
+import me.tabacowang.githubpopular.data.RepoSearchResult
 
-@Database(entities = [Repo::class, FavoriteRepo::class], version = 1)
+@Database(entities = [Repo::class, FavoriteRepo::class, RepoSearchResult::class], version = 1)
 abstract class GithubDatabase : RoomDatabase() {
     abstract fun githubDao(): GithubDao
 

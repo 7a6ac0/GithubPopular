@@ -4,6 +4,7 @@ import com.google.common.collect.Lists
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import me.tabacowang.githubpopular.data.Repo
+import me.tabacowang.githubpopular.data.RepoSearchResult
 import me.tabacowang.githubpopular.data.source.GithubDataSource
 import me.tabacowang.githubpopular.util.AppExecutors
 import java.util.LinkedHashMap
@@ -16,9 +17,9 @@ object GithubRemoteDataSource : GithubDataSource {
 
     private val appExecutors by lazy { AppExecutors() }
 
-    override fun getRepos(searchQuery: String, callback: GithubDataSource.LoadReposCallback) {
+    override fun getRepos(searchQuery: String, page: Int, callback: GithubDataSource.LoadReposCallback) {
         appExecutors.networkIO.execute {
-            githubService.getRepos("topic:$searchQuery")
+            githubService.getRepos("topic:$searchQuery", page = page)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe ({githubResponse ->
@@ -60,8 +61,8 @@ object GithubRemoteDataSource : GithubDataSource {
         REPOS_SERVICE_DATA.clear()
     }
 
-    override fun deleteRepo(repoId: String) {
-        REPOS_SERVICE_DATA.remove(repoId)
+    override fun deleteRepo(searchQuery: String) {
+
     }
 
     override fun saveFavoriteRepo(repoId: String) {
@@ -69,6 +70,18 @@ object GithubRemoteDataSource : GithubDataSource {
     }
 
     override fun deleteFavoriteRepo(repoId: String) {
+
+    }
+
+    override fun saveSearchResult(repoSearchResult: RepoSearchResult) {
+
+    }
+
+    override fun getSearchResult(searchQuery: String, callback: GithubDataSource.GetSearchResultCallback) {
+
+    }
+
+    override fun deleteSearchResult(searchQuery: String) {
 
     }
 }

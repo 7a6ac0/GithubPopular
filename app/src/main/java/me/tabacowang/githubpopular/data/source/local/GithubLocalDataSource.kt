@@ -2,6 +2,7 @@ package me.tabacowang.githubpopular.data.source.local
 
 import me.tabacowang.githubpopular.data.FavoriteRepo
 import me.tabacowang.githubpopular.data.Repo
+import me.tabacowang.githubpopular.data.RepoSearchResult
 import me.tabacowang.githubpopular.data.source.GithubDataSource
 import me.tabacowang.githubpopular.util.AppExecutors
 
@@ -22,7 +23,7 @@ class GithubLocalDataSource private constructor(
                 }
     }
 
-    override fun getRepos(searchQuery: String, callback: GithubDataSource.LoadReposCallback) {
+    override fun getRepos(searchQuery: String, page: Int, callback: GithubDataSource.LoadReposCallback) {
         appExecutors.diskIO.execute {
             val repos = githubDao.getRepos(searchQuery).sortedByDescending { it.stars }
             appExecutors.mainThread.execute {
@@ -82,8 +83,8 @@ class GithubLocalDataSource private constructor(
         appExecutors.diskIO.execute { githubDao.deleteRepos() }
     }
 
-    override fun deleteRepo(repoId: String) {
-        appExecutors.diskIO.execute { githubDao.deleteRepoById(repoId) }
+    override fun deleteRepo(searchQuery: String) {
+        appExecutors.diskIO.execute { githubDao.deleteRepoByQuery(searchQuery) }
     }
 
     override fun saveFavoriteRepo(repoId: String) {
@@ -93,5 +94,26 @@ class GithubLocalDataSource private constructor(
 
     override fun deleteFavoriteRepo(repoId: String) {
         appExecutors.diskIO.execute { githubDao.deleteFavoriteRepoById(repoId) }
+    }
+
+    override fun saveSearchResult(repoSearchResult: RepoSearchResult) {
+        appExecutors.diskIO.execute { githubDao.insertSearchQuery(repoSearchResult) }
+    }
+
+    override fun getSearchResult(searchQuery: String, callback: GithubDataSource.GetSearchResultCallback) {
+        appExecutors.diskIO.execute {
+            val searchResult = githubDao.getSearchResult(searchQuery)
+            appExecutors.mainThread.execute {
+                if (searchResult != null) {
+                    callback.onResultLoaded(searchResult)
+                } else {
+                    callback.onDataNotAvailable()
+                }
+            }
+        }
+    }
+
+    override fun deleteSearchResult(searchQuery: String) {
+        appExecutors.diskIO.execute { githubDao.deleteSearchResultByQuery(searchQuery) }
     }
 }

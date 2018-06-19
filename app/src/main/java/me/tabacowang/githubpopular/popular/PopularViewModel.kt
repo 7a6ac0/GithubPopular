@@ -10,6 +10,7 @@ import android.databinding.ObservableList
 import android.graphics.drawable.Drawable
 import me.tabacowang.githubpopular.SingleLiveEvent
 import me.tabacowang.githubpopular.data.Repo
+import me.tabacowang.githubpopular.data.RepoSearchResult
 import me.tabacowang.githubpopular.data.source.GithubDataSource
 import me.tabacowang.githubpopular.data.source.GithubRepository
 
@@ -41,6 +42,20 @@ class PopularViewModel(
         loadRepos(forceUpdate, true)
     }
 
+    fun loadMoreRepos() {
+        val query = searchQuery.get()!!.toLowerCase()
+        githubRepository.getSearchResult(query, object : GithubDataSource.GetSearchResultCallback {
+            override fun onResultLoaded(repoSearchResult: RepoSearchResult) {
+                val nextPage = repoSearchResult.next!! + 1
+                loadMoreRepos(query, nextPage)
+            }
+
+            override fun onDataNotAvailable() {
+
+            }
+        })
+    }
+
     fun updateFavoriteRepo(repo: Repo, isFavorite: Boolean) {
         if (isFavorite) {
             githubRepository.saveFavoriteRepo(repo.id)
@@ -49,6 +64,32 @@ class PopularViewModel(
             githubRepository.deleteFavoriteRepo(repo.id)
         }
         repo.isFavorite = isFavorite
+    }
+
+    private fun loadMoreRepos(searchQuery: String, page: Int) {
+        dataLoading.set(true)
+
+        githubRepository.getRepos(searchQuery, page, object : GithubDataSource.LoadReposCallback{
+            override fun onReposLoaded(repos: List<Repo>) {
+                val reposToShow = repos
+                val searchResult = RepoSearchResult(searchQuery, page)
+
+                dataLoading.set(false)
+                isDataLoadingError.set(false)
+
+                with(items) {
+                    clear()
+                    addAll(reposToShow)
+                }
+
+                githubRepository.saveSearchResult(searchResult)
+            }
+
+            override fun onDataNotAvailable() {
+                isDataLoadingError.set(true)
+                dataLoading.set(false)
+            }
+        })
     }
 
     private fun loadRepos(forceUpdate: Boolean, showLoadingUI: Boolean) {
@@ -61,9 +102,12 @@ class PopularViewModel(
             githubRepository.refreshRepos()
         }
 
-        githubRepository.getRepos(searchQuery.get()!!.toLowerCase(), object : GithubDataSource.LoadReposCallback{
+        val query = searchQuery.get()!!.toLowerCase()
+
+        githubRepository.getRepos(query, 1, object : GithubDataSource.LoadReposCallback{
             override fun onReposLoaded(repos: List<Repo>) {
                 val reposToShow = repos
+                val searchResult = RepoSearchResult(query, 1)
 
                 if (showLoadingUI) {
                     dataLoading.set(false)
@@ -75,6 +119,17 @@ class PopularViewModel(
                     addAll(reposToShow)
                     empty.set(isEmpty())
                 }
+
+                githubRepository.getSearchResult(query, object : GithubDataSource.GetSearchResultCallback {
+                    override fun onResultLoaded(repoSearchResult: RepoSearchResult) {
+
+                    }
+
+                    override fun onDataNotAvailable() {
+                        githubRepository.saveSearchResult(searchResult)
+                    }
+                })
+
             }
 
             override fun onDataNotAvailable() {
