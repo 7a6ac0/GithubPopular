@@ -46,8 +46,7 @@ class PopularViewModel(
         val query = searchQuery.get()!!.toLowerCase()
         githubRepository.getSearchResult(query, object : GithubDataSource.GetSearchResultCallback {
             override fun onResultLoaded(repoSearchResult: RepoSearchResult) {
-                val nextPage = repoSearchResult.next!! + 1
-                loadMoreRepos(query, nextPage)
+                loadMoreRepos(query, repoSearchResult.next!!)
             }
 
             override fun onDataNotAvailable() {
@@ -58,10 +57,10 @@ class PopularViewModel(
 
     fun updateFavoriteRepo(repo: Repo, isFavorite: Boolean) {
         if (isFavorite) {
-            githubRepository.saveFavoriteRepo(repo.id)
+            githubRepository.saveFavoriteRepo(repo)
         }
         else {
-            githubRepository.deleteFavoriteRepo(repo.id)
+            githubRepository.deleteFavoriteRepo(repo)
         }
         repo.isFavorite = isFavorite
     }
@@ -72,7 +71,7 @@ class PopularViewModel(
         githubRepository.getRepos(searchQuery, page, object : GithubDataSource.LoadReposCallback{
             override fun onReposLoaded(repos: List<Repo>) {
                 val reposToShow = repos
-                val searchResult = RepoSearchResult(searchQuery, page)
+                val searchResult = RepoSearchResult(searchQuery, page + 1)
 
                 dataLoading.set(false)
                 isDataLoadingError.set(false)
@@ -107,7 +106,7 @@ class PopularViewModel(
         githubRepository.getRepos(query, 1, object : GithubDataSource.LoadReposCallback{
             override fun onReposLoaded(repos: List<Repo>) {
                 val reposToShow = repos
-                val searchResult = RepoSearchResult(query, 1)
+                val searchResult = RepoSearchResult(query, 2)
 
                 if (showLoadingUI) {
                     dataLoading.set(false)

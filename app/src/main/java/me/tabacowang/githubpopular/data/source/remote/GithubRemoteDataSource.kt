@@ -23,13 +23,17 @@ object GithubRemoteDataSource : GithubDataSource {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe ({githubResponse ->
-                        deleteAllRepos()
-                        githubResponse.items.forEach {repo ->
-                            REPOS_SERVICE_DATA[repo.id] = repo.apply {
-                                this.searchQuery = searchQuery
+                        if (githubResponse.total > 0 && githubResponse.items.isNotEmpty()) {
+                            deleteAllRepos()
+                            githubResponse.items.forEach { repo ->
+                                REPOS_SERVICE_DATA[repo.id] = repo.apply {
+                                    this.searchQuery = searchQuery
+                                }
                             }
+                            callback.onReposLoaded(Lists.newArrayList(REPOS_SERVICE_DATA.values))
+                        } else {
+                            callback.onDataNotAvailable()
                         }
-                        callback.onReposLoaded(Lists.newArrayList(REPOS_SERVICE_DATA.values))
                     }, {
                         it.printStackTrace()
                         callback.onDataNotAvailable()
@@ -50,10 +54,6 @@ object GithubRemoteDataSource : GithubDataSource {
 
     }
 
-    override fun updateFavoriteRepo(repoId: String, isFavorite: Boolean) {
-
-    }
-
     override fun refreshRepos() {
     }
 
@@ -65,11 +65,15 @@ object GithubRemoteDataSource : GithubDataSource {
 
     }
 
-    override fun saveFavoriteRepo(repoId: String) {
+    override fun updateFavoriteRepo(favoriteRepo: Repo, isFavorite: Boolean) {
 
     }
 
-    override fun deleteFavoriteRepo(repoId: String) {
+    override fun saveFavoriteRepo(favoriteRepo: Repo) {
+
+    }
+
+    override fun deleteFavoriteRepo(favoriteRepo: Repo) {
 
     }
 

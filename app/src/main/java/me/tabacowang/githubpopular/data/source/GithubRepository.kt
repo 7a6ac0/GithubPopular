@@ -1,12 +1,13 @@
 package me.tabacowang.githubpopular.data.source
 
+import me.tabacowang.githubpopular.data.FavoriteRepo
 import me.tabacowang.githubpopular.data.Repo
 import me.tabacowang.githubpopular.data.RepoSearchResult
 import java.util.LinkedHashMap
 
 class GithubRepository(
-        val githubRemoteDataSource: GithubDataSource,
-        val githubLocalDataSource: GithubDataSource
+        private val githubRemoteDataSource: GithubDataSource,
+        private val githubLocalDataSource: GithubDataSource
 ) : GithubDataSource {
 
     var cachedRepos: LinkedHashMap<String, Repo> = LinkedHashMap()
@@ -71,20 +72,20 @@ class GithubRepository(
     }
 
     override fun getFavoriteRepos(callback: GithubDataSource.LoadFavoriteReposCallback) {
+        githubLocalDataSource.getFavoriteRepos(object : GithubDataSource.LoadFavoriteReposCallback{
+            override fun onFavoriteReposLoaded(favoriteRepos: List<FavoriteRepo>) {
+                callback.onFavoriteReposLoaded(favoriteRepos)
+            }
 
+            override fun onDataNotAvailable() {
+                callback.onDataNotAvailable()
+            }
+        })
     }
 
     override fun saveRepo(repo: Repo) {
         // For test.
         // Not require to add a repo by user.
-    }
-
-    override fun updateFavoriteRepo(repoId: String, isFavorite: Boolean) {
-        getRepoWithId(repoId)?.let {
-            cacheAndPerform(it) {
-                githubLocalDataSource.updateFavoriteRepo(it.id, isFavorite)
-            }
-        }
     }
 
     override fun refreshRepos() {
@@ -101,14 +102,22 @@ class GithubRepository(
         githubLocalDataSource.deleteRepo(searchQuery)
     }
 
-    override fun saveFavoriteRepo(repoId: String) {
-        githubLocalDataSource.saveFavoriteRepo(repoId)
-        updateFavoriteRepo(repoId, true)
+    override fun updateFavoriteRepo(favoriteRepo: Repo, isFavorite: Boolean) {
+        getRepoWithId(favoriteRepo.id)?.let {
+            cacheAndPerform(it) {
+                githubLocalDataSource.updateFavoriteRepo(it, isFavorite)
+            }
+        }
     }
 
-    override fun deleteFavoriteRepo(repoId: String) {
-        githubLocalDataSource.deleteFavoriteRepo(repoId)
-        updateFavoriteRepo(repoId, false)
+    override fun saveFavoriteRepo(favoriteRepo: Repo) {
+        githubLocalDataSource.saveFavoriteRepo(favoriteRepo)
+        updateFavoriteRepo(favoriteRepo, true)
+    }
+
+    override fun deleteFavoriteRepo(favoriteRepo: Repo) {
+        githubLocalDataSource.deleteFavoriteRepo(favoriteRepo)
+        updateFavoriteRepo(favoriteRepo, false)
     }
 
     override fun saveSearchResult(repoSearchResult: RepoSearchResult) {

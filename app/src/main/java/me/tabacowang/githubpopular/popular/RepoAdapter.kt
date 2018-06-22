@@ -51,7 +51,8 @@ class RepoAdapter(
                         viewModel.updateFavoriteRepo(repo, checked)
                     }
                     is FavoriteViewModel -> {
-
+                        viewModel.updateFavoriteRepo(repo, checked)
+                        viewModel.start()
                     }
                 }
             }

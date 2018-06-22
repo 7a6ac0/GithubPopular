@@ -4,7 +4,6 @@ import android.databinding.BindingAdapter
 import android.widget.ImageView
 import android.widget.ListView
 import com.squareup.picasso.Picasso
-import me.tabacowang.githubpopular.R
 import me.tabacowang.githubpopular.data.Repo
 
 object RepoListBinding {

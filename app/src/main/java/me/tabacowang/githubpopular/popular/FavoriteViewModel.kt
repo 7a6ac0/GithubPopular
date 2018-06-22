@@ -9,7 +9,9 @@ import android.databinding.ObservableField
 import android.databinding.ObservableList
 import android.graphics.drawable.Drawable
 import me.tabacowang.githubpopular.SingleLiveEvent
+import me.tabacowang.githubpopular.data.FavoriteRepo
 import me.tabacowang.githubpopular.data.Repo
+import me.tabacowang.githubpopular.data.source.GithubDataSource
 import me.tabacowang.githubpopular.data.source.GithubRepository
 
 class FavoriteViewModel(
@@ -23,17 +25,44 @@ class FavoriteViewModel(
     internal val openRepoEvent = SingleLiveEvent<String>()
 
     // These observable fields will update Views automatically
-//    val items: ObservableList<Repo> = ObservableArrayList()
-    val dataLoading = ObservableBoolean(false)
+    val items: ObservableList<Repo> = ObservableArrayList()
     val noRepoLabel = ObservableField<String>()
     val noRepoIconRes = ObservableField<Drawable>()
     val empty = ObservableBoolean(false)
     val snackbarMessage = SingleLiveEvent<Int>()
 
     fun start() {
+        loadFavoriteRepos()
     }
 
-    fun loadRepo(forceUpdate: Boolean) {
+    fun updateFavoriteRepo(repo: Repo, isFavorite: Boolean) {
+        if (isFavorite) {
+            githubRepository.saveFavoriteRepo(repo)
+        }
+        else {
+            githubRepository.deleteFavoriteRepo(repo)
+        }
+        repo.isFavorite = isFavorite
+    }
 
+    private fun loadFavoriteRepos() {
+        githubRepository.getFavoriteRepos(object : GithubDataSource.LoadFavoriteReposCallback{
+            override fun onFavoriteReposLoaded(favoriteRepos: List<FavoriteRepo>) {
+                var favoriteReposToShow: ArrayList<Repo> = ArrayList<Repo>()
+                favoriteRepos.forEach {
+                    favoriteReposToShow.add(it.repo)
+                }
+
+                with(items) {
+                    clear()
+                    addAll(favoriteReposToShow)
+                    empty.set(isEmpty())
+                }
+            }
+
+            override fun onDataNotAvailable() {
+                empty.set(true)
+            }
+        })
     }
 }

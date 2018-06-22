@@ -11,12 +11,13 @@
             type="me.tabacowang.githubpopular.popular.FavoriteViewModel" />
     </data>
 
-
     <RelativeLayout
         android:id="@+id/repoContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <LinearLayout
@@ -26,23 +27,11 @@
             android:orientation="vertical"
             android:visibility="@{viewmodel.empty ? View.GONE : View.VISIBLE}">
 
-            <!--<TextView-->
-            <!--android:id="@+id/filteringLabel"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textAppearance="@style/TextAppearance.AppCompat.Title"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:layout_marginLeft="@dimen/list_item_padding"-->
-            <!--android:layout_marginRight="@dimen/list_item_padding"-->
-            <!--android:layout_marginTop="@dimen/activity_vertical_margin"-->
-            <!--android:layout_marginBottom="@dimen/activity_vertical_margin"-->
-            <!--android:text="@{viewmodel.currentFilteringLabel}" />-->
-
-            <!--<ListView-->
-            <!--android:id="@+id/repo_list"-->
-            <!--app:items="@{viewmodel.items}"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content" />-->
+            <ListView
+                android:id="@+id/repo_list"
+                app:items="@{viewmodel.items}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
@@ -52,7 +41,6 @@
             android:layout_centerInParent="true"
             android:orientation="vertical"
             android:visibility="@{viewmodel.empty ? View.VISIBLE : View.GONE}">
-
 
             <ImageView
                 android:id="@+id/noRepoIcon"

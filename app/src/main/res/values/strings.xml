@@ -1,10 +1,11 @@
 <resources>
     <string name="app_name">GithubPopular</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="popular_repos">Popular</string>
+    <string name="favorite_repos">Favorite</string>
+    <string name="setting">Setting</string>
 
     <string name="no_repos">Sorry, there\'s no Repos!</string>
+    <string name="no_favorite_repos">You don\'t have favorite Repos!</string>
     <string name="repo_search">Search</string>
     <string name="author">Author:</string>
     <string name="stars">Stars:</string>

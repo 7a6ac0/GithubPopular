@@ -72,10 +72,6 @@ class GithubLocalDataSource private constructor(
         }
     }
 
-    override fun updateFavoriteRepo(repoId: String, isFavorite: Boolean) {
-        appExecutors.diskIO.execute { githubDao.updateFavoriteRepo(repoId, isFavorite) }
-    }
-
     override fun refreshRepos() {
     }
 
@@ -87,13 +83,17 @@ class GithubLocalDataSource private constructor(
         appExecutors.diskIO.execute { githubDao.deleteRepoByQuery(searchQuery) }
     }
 
-    override fun saveFavoriteRepo(repoId: String) {
-        val favoriteRepo = FavoriteRepo(repoId = repoId)
+    override fun updateFavoriteRepo(favoriteRepo: Repo, isFavorite: Boolean) {
+        appExecutors.diskIO.execute { githubDao.updateFavoriteRepo(favoriteRepo.id, isFavorite) }
+    }
+
+    override fun saveFavoriteRepo(favoriteRepo: Repo) {
+        val favoriteRepo = FavoriteRepo(repo = favoriteRepo)
         appExecutors.diskIO.execute { githubDao.insertFavoriteRepo(favoriteRepo) }
     }
 
-    override fun deleteFavoriteRepo(repoId: String) {
-        appExecutors.diskIO.execute { githubDao.deleteFavoriteRepoById(repoId) }
+    override fun deleteFavoriteRepo(favoriteRepo: Repo) {
+        appExecutors.diskIO.execute { githubDao.deleteFavoriteRepoById(favoriteRepo.id) }
     }
 
     override fun saveSearchResult(repoSearchResult: RepoSearchResult) {

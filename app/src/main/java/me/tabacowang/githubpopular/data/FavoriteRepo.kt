@@ -1,5 +1,6 @@
 package me.tabacowang.githubpopular.data
 
+import android.arch.persistence.room.Embedded
 import android.arch.persistence.room.Entity
 import java.util.*
 
@@ -7,5 +8,6 @@ import java.util.*
         primaryKeys = ["_id"])
 data class FavoriteRepo(
         val _id: String = UUID.randomUUID().toString(),
-        val repoId: String
+        @Embedded
+        val repo: Repo
 )

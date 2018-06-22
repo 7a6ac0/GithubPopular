@@ -32,19 +32,19 @@ interface GithubDataSource {
 
     fun saveRepo(repo: Repo)
 
-    fun updateFavoriteRepo(repoId: String, isFavorite: Boolean)
-
     fun refreshRepos()
 
     fun deleteAllRepos()
 
     fun deleteRepo(searchQuery: String)
 
+    fun updateFavoriteRepo(favoriteRepo: Repo, isFavorite: Boolean)
+
     fun getFavoriteRepos(callback: LoadFavoriteReposCallback)
 
-    fun saveFavoriteRepo(repoId: String)
+    fun saveFavoriteRepo(favoriteRepo: Repo)
 
-    fun deleteFavoriteRepo(repoId: String)
+    fun deleteFavoriteRepo(favoriteRepo: Repo)
 
     interface GetSearchResultCallback {
 

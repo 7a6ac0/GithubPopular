@@ -34,7 +34,7 @@ class PopularActivity : AppCompatActivity(), RepoItemNavigator {
         bottomNavigationView = findViewById<BottomNavigationView>(R.id.navigation_view).apply {
             setOnNavigationItemSelectedListener { item ->
                 when (item.itemId) {
-                    R.id.navigation_home -> {
+                    R.id.navigation_popular -> {
                         if(supportFragmentManager.findFragmentById(R.id.contentFrame) !is PopularFragment) {
                             PopularFragment.newInstance().let {
                                 replaceFragmentInActivity(it, R.id.contentFrame)
@@ -43,7 +43,7 @@ class PopularActivity : AppCompatActivity(), RepoItemNavigator {
                         }
                         return@setOnNavigationItemSelectedListener true
                     }
-                    R.id.navigation_dashboard -> {
+                    R.id.navigation_favorite -> {
                         if(supportFragmentManager.findFragmentById(R.id.contentFrame) !is FavoriteFragment) {
                             FavoriteFragment.newInstance().let {
                                 replaceFragmentInActivity(it, R.id.contentFrame)
@@ -52,7 +52,7 @@ class PopularActivity : AppCompatActivity(), RepoItemNavigator {
                         }
                         return@setOnNavigationItemSelectedListener true
                     }
-                    R.id.navigation_notifications -> {
+                    R.id.navigation_setting -> {
                         return@setOnNavigationItemSelectedListener true
                     }
                 }

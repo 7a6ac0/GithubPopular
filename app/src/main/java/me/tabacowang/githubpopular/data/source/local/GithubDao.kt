@@ -25,11 +25,11 @@ import me.tabacowang.githubpopular.data.RepoSearchResult
     // FavoriteRepo
     @Query("SELECT * from favorite_repos") fun getFavoriteRepos(): List<FavoriteRepo>
 
-    @Query("SELECT * from favorite_repos WHERE repoId = :favoriteRepoId") fun getFavoriteRepoById(favoriteRepoId: String): FavoriteRepo?
+    @Query("SELECT * from favorite_repos WHERE id = :favoriteRepoId") fun getFavoriteRepoById(favoriteRepoId: String): FavoriteRepo?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE) fun insertFavoriteRepo(favoriteRepo: FavoriteRepo)
 
-    @Query("DELETE FROM favorite_repos WHERE repoId = :favoriteRepoId") fun deleteFavoriteRepoById(favoriteRepoId: String): Int
+    @Query("DELETE FROM favorite_repos WHERE id = :favoriteRepoId") fun deleteFavoriteRepoById(favoriteRepoId: String): Int
 
     // RepoSearchResult
     @Insert(onConflict = OnConflictStrategy.REPLACE) fun insertSearchQuery(repoSearchResult: RepoSearchResult)
