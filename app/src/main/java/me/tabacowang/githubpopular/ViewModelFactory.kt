@@ -13,6 +13,7 @@ class ViewModelFactory private constructor(
         private val githubRepository: GithubRepository
 ) : ViewModelProvider.NewInstanceFactory() {
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return with(modelClass) {
             when {
