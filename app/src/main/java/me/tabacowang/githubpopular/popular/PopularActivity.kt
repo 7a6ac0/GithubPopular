@@ -20,7 +20,9 @@ class PopularActivity : AppCompatActivity(), RepoItemNavigator {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.popular_activity)
 
-        setupActionBar(R.id.toolbar) {}
+        setupActionBar(R.id.toolbar) {
+            setDisplayShowTitleEnabled(false)
+        }
 
         setupNavigationView()
 
