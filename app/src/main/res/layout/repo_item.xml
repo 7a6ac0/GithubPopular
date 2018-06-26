@@ -89,6 +89,7 @@
                     android:layout_height="36dp"
                     android:onClick="@{(view) -> listener.onFavoriteChanged(repo, view)}"
                     android:checked="@{repo.isFavorite}"
+                    android:background="@drawable/button_favorite"
                     android:text=""
                     android:textOff=""
                     android:textOn="" />
