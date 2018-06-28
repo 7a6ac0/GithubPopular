@@ -6,6 +6,7 @@
 
     <string name="no_repos">Sorry, there\'s no Repos!</string>
     <string name="no_favorite_repos">You don\'t have favorite Repos!</string>
+    <string name="not_exist_repo">This Repo doesn\'t exist!</string>
     <string name="repo_search">Search</string>
     <string name="author">Author:</string>
     <string name="stars">Stars:</string>

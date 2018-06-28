@@ -36,10 +36,10 @@ class RepoAdapter(
             override fun onRepoClicked(repo: Repo) {
                 when(viewModel) {
                     is PopularViewModel -> {
-                        viewModel.openRepoEvent.value = repo.id
+                        viewModel.openRepoEvent.value = repo
                     }
                     is FavoriteViewModel -> {
-                        viewModel.openRepoEvent.value = repo.id
+                        viewModel.openRepoEvent.value = repo
                     }
                 }
             }

@@ -22,7 +22,7 @@ class PopularViewModel(
     private val isDataLoadingError = ObservableBoolean(false)
     private val context: Context = context.applicationContext //Application Context to avoid leaks.
 
-    internal val openRepoEvent = SingleLiveEvent<String>()
+    internal val openRepoEvent = SingleLiveEvent<Repo>()
 
     val searchQuery = ObservableField<String>("")
 

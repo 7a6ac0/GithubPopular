@@ -180,7 +180,7 @@ class GithubRepository(
     private fun getRepoWithId(id: String) = cachedRepos[id]
 
     private inline fun cacheAndPerform(repo: Repo, perform: (Repo) -> Unit) {
-        val cachedRepo = Repo(repo.id, repo.name, repo.fullName, repo.description, repo.owner, repo.stars).apply {
+        val cachedRepo = Repo(repo.id, repo.name, repo.fullName, repo.description, repo.owner, repo.htmlUrl, repo.stars).apply {
             searchQuery = repo.searchQuery
             isFavorite = repo.isFavorite
         }

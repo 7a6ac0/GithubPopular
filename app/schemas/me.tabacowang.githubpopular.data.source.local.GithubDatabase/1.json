@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4c30d19fe271e92d2fb8298c936bdb37",
+    "identityHash": "4a799bde5eb601f4fea1b5f7e195d878",
     "entities": [
       {
         "tableName": "repos",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`searchQuery` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, `id` TEXT NOT NULL, `name` TEXT NOT NULL, `fullName` TEXT NOT NULL, `description` TEXT, `stars` INTEGER NOT NULL, `owner_login` TEXT NOT NULL, `owner_avatarUrl` TEXT NOT NULL, `owner_url` TEXT, PRIMARY KEY(`name`, `owner_login`, `searchQuery`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`searchQuery` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, `id` TEXT NOT NULL, `name` TEXT NOT NULL, `fullName` TEXT NOT NULL, `description` TEXT, `htmlUrl` TEXT NOT NULL, `stars` INTEGER NOT NULL, `owner_login` TEXT NOT NULL, `owner_avatarUrl` TEXT NOT NULL, `owner_url` TEXT, PRIMARY KEY(`name`, `owner_login`, `searchQuery`))",
         "fields": [
           {
             "fieldPath": "searchQuery",
@@ -43,6 +43,12 @@
             "columnName": "description",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "htmlUrl",
+            "columnName": "htmlUrl",
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "stars",
@@ -99,7 +105,7 @@
       },
       {
         "tableName": "favorite_repos",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `searchQuery` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, `id` TEXT NOT NULL, `name` TEXT NOT NULL, `fullName` TEXT NOT NULL, `description` TEXT, `stars` INTEGER NOT NULL, `owner_login` TEXT NOT NULL, `owner_avatarUrl` TEXT NOT NULL, `owner_url` TEXT, PRIMARY KEY(`_id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` TEXT NOT NULL, `searchQuery` TEXT NOT NULL, `isFavorite` INTEGER NOT NULL, `id` TEXT NOT NULL, `name` TEXT NOT NULL, `fullName` TEXT NOT NULL, `description` TEXT, `htmlUrl` TEXT NOT NULL, `stars` INTEGER NOT NULL, `owner_login` TEXT NOT NULL, `owner_avatarUrl` TEXT NOT NULL, `owner_url` TEXT, PRIMARY KEY(`_id`))",
         "fields": [
           {
             "fieldPath": "_id",
@@ -142,6 +148,12 @@
             "columnName": "description",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "repo.htmlUrl",
+            "columnName": "htmlUrl",
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "repo.stars",
@@ -206,7 +218,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"4c30d19fe271e92d2fb8298c936bdb37\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"4a799bde5eb601f4fea1b5f7e195d878\")"
     ]
   }
 }

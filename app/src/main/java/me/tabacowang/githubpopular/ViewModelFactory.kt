@@ -7,6 +7,7 @@ import android.arch.lifecycle.ViewModelProvider
 import me.tabacowang.githubpopular.data.source.GithubRepository
 import me.tabacowang.githubpopular.popular.FavoriteViewModel
 import me.tabacowang.githubpopular.popular.PopularViewModel
+import me.tabacowang.githubpopular.repodetail.RepoDetailViewModel
 
 class ViewModelFactory private constructor(
         private val application: Application,
@@ -21,6 +22,8 @@ class ViewModelFactory private constructor(
                     PopularViewModel(application, githubRepository)
                 isAssignableFrom(FavoriteViewModel::class.java) ->
                     FavoriteViewModel(application, githubRepository)
+                isAssignableFrom(RepoDetailViewModel::class.java) ->
+                        RepoDetailViewModel(application, githubRepository)
                 else ->
                     throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }

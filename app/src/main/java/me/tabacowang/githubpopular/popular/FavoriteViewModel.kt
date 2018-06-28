@@ -22,7 +22,7 @@ class FavoriteViewModel(
     private val isDataLoadingError = ObservableBoolean(false)
     private val context: Context = context.applicationContext //Application Context to avoid leaks.
 
-    internal val openRepoEvent = SingleLiveEvent<String>()
+    internal val openRepoEvent = SingleLiveEvent<Repo>()
 
     // These observable fields will update Views automatically
     val items: ObservableList<Repo> = ObservableArrayList()

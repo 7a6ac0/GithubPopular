@@ -22,6 +22,8 @@ data class Repo(
         @SerializedName("owner")
         @Embedded(prefix = "owner_")
         val owner: Owner,
+        @SerializedName("html_url")
+        val htmlUrl: String,
         @SerializedName("stargazers_count")
         val stars: Int
 ) {
