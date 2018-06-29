@@ -45,6 +45,10 @@ dependencies {
     implementation "com.google.guava:guava:$rootProject.ext.guavaVersion"
     implementation 'com.squareup.picasso:picasso:2.5.2'
 
+    // dagger
+    implementation "com.google.dagger:dagger:$rootProject.ext.daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$rootProject.ext.daggerVersion"
+
     // retrofit
     implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit2Version"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.ext.retrofit2Version"

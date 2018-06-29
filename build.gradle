@@ -7,6 +7,7 @@ ext{
     retrofit2Version = "2.4.0"
     okhttp3Version = "3.10.0"
     guavaVersion = '22.0-android'
+    daggerVersion = "2.13"
 }
 
 
