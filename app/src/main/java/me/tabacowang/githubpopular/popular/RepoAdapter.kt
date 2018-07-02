@@ -5,6 +5,9 @@ import android.databinding.DataBindingUtil
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.BounceInterpolator
+import android.view.animation.ScaleAnimation
 import android.widget.BaseAdapter
 import android.widget.ToggleButton
 import me.tabacowang.githubpopular.data.Repo
@@ -45,7 +48,18 @@ class RepoAdapter(
             }
 
             override fun onFavoriteChanged(repo: Repo, v: View) {
-                val checked = (v as ToggleButton).isChecked
+                val toggleButton = (v as ToggleButton).apply {
+                    val scaleAnimation = ScaleAnimation(0.7f, 1.0f, 0.7f, 1.0f,
+                            Animation.RELATIVE_TO_SELF,
+                            0.7f,
+                            Animation.RELATIVE_TO_SELF,
+                            0.7f).apply {
+                        duration = 500
+                        interpolator = BounceInterpolator()
+                    }
+                    startAnimation(scaleAnimation)
+                }
+                val checked = toggleButton.isChecked
                 when(viewModel) {
                     is PopularViewModel -> {
                         viewModel.updateFavoriteRepo(repo, checked)
