@@ -1,7 +1,6 @@
 package me.tabacowang.githubpopular.data.source.remote
 
 import io.reactivex.Observable
-import me.tabacowang.githubpopular.data.Repo
 import retrofit2.http.GET
 import retrofit2.http.Query
 

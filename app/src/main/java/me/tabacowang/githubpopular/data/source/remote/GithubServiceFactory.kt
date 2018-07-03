@@ -11,10 +11,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object GithubServiceFactory {
     private val BASE_URL: String = "https://api.github.com/"
+    private val TREND_URL: String = "http://trending.codehub-app.com/v2/trending"
 
-    val APIService by lazy {
-        create()
-    }
+    val APIService by lazy { create() }
+
+    val trendingService by lazy { createTrending() }
 
     private fun create(): GithubService {
         val retrofit = Retrofit.Builder()
@@ -25,6 +26,17 @@ object GithubServiceFactory {
                 .build()
 
         return retrofit.create(GithubService::class.java)
+    }
+
+    private fun createTrending(): TrendService {
+        val retrofit = Retrofit.Builder()
+                .baseUrl(TREND_URL)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(createGsonConverter())
+                .client(makeOkHttpClient())
+                .build()
+
+        return retrofit.create(TrendService::class.java)
     }
 
     private fun makeOkHttpClient(): OkHttpClient {

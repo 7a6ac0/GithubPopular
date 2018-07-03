@@ -9,35 +9,24 @@ import me.tabacowang.githubpopular.data.source.GithubDataSource
 import me.tabacowang.githubpopular.util.AppExecutors
 import java.util.LinkedHashMap
 
-object GithubRemoteDataSource : GithubDataSource {
-
+object TrendRemoteDataSource : GithubDataSource {
     private var REPOS_SERVICE_DATA: LinkedHashMap<String, Repo> = LinkedHashMap()
 
-    private val githubService by lazy { GithubServiceFactory.APIService }
+    private val trendService by lazy { GithubServiceFactory.trendingService }
 
     private val appExecutors by lazy { AppExecutors() }
 
     override fun getTrendRepos(callback: GithubDataSource.LoadTrendReposCallback) {
-
-    }
-
-    override fun getRepos(searchQuery: String, page: Int, callback: GithubDataSource.LoadReposCallback) {
         appExecutors.networkIO.execute {
-            githubService.getRepos("topic:$searchQuery", page = page)
+            trendService.getTrendRepos()
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
-                    .subscribe ({githubResponse ->
-                        if (githubResponse.total > 0 && githubResponse.items.isNotEmpty()) {
-                            deleteAllRepos()
-                            githubResponse.items.forEach { repo ->
-                                REPOS_SERVICE_DATA[repo.id] = repo.apply {
-                                    this.searchQuery = searchQuery
-                                }
-                            }
-                            callback.onReposLoaded(Lists.newArrayList(REPOS_SERVICE_DATA.values))
-                        } else {
-                            callback.onDataNotAvailable()
+                    .subscribe ({trendResponse ->
+                        deleteAllRepos()
+                        trendResponse.forEach { repo ->
+                            REPOS_SERVICE_DATA[repo.id] = repo
                         }
+                        callback.onTrendReposLoaded(Lists.newArrayList(REPOS_SERVICE_DATA.values))
                     }, {
                         it.printStackTrace()
                         callback.onDataNotAvailable()
@@ -45,9 +34,12 @@ object GithubRemoteDataSource : GithubDataSource {
         }
     }
 
+    override fun getRepos(searchQuery: String, page: Int, callback: GithubDataSource.LoadReposCallback) {
+
+    }
+
     override fun getRepo(repoId: String, callback: GithubDataSource.GetRepoCallback) {
-//        val repo = REPOS_SERVICE_DATA[repoId]
-//        repo?.let { callback.onRepoLoaded(repo) }
+
     }
 
     override fun getFavoriteRepos(callback: GithubDataSource.LoadFavoriteReposCallback) {

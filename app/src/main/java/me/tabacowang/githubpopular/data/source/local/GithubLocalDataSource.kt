@@ -23,6 +23,10 @@ class GithubLocalDataSource private constructor(
                 }
     }
 
+    override fun getTrendRepos(callback: GithubDataSource.LoadTrendReposCallback) {
+
+    }
+
     override fun getRepos(searchQuery: String, page: Int, callback: GithubDataSource.LoadReposCallback) {
         appExecutors.diskIO.execute {
             val repos = githubDao.getRepos(searchQuery).sortedByDescending { it.stars }

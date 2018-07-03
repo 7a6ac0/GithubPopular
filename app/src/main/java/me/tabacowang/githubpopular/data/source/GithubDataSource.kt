@@ -12,6 +12,13 @@ interface GithubDataSource {
         fun onDataNotAvailable()
     }
 
+    interface LoadTrendReposCallback {
+
+        fun onTrendReposLoaded(repos: List<Repo>)
+
+        fun onDataNotAvailable()
+    }
+
     interface GetRepoCallback {
 
         fun onRepoLoaded(repo: Repo)
@@ -25,6 +32,8 @@ interface GithubDataSource {
 
         fun onDataNotAvailable()
     }
+
+    fun getTrendRepos(callback: LoadTrendReposCallback)
 
     fun getRepos(searchQuery: String, page: Int, callback: LoadReposCallback)
 

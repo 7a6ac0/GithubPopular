@@ -3,11 +3,13 @@ package me.tabacowang.githubpopular.data.source
 import me.tabacowang.githubpopular.data.FavoriteRepo
 import me.tabacowang.githubpopular.data.Repo
 import me.tabacowang.githubpopular.data.RepoSearchResult
+import me.tabacowang.githubpopular.data.source.remote.TrendRemoteDataSource
 import java.util.LinkedHashMap
 
 class GithubRepository(
         private val githubRemoteDataSource: GithubDataSource,
-        private val githubLocalDataSource: GithubDataSource
+        private val githubLocalDataSource: GithubDataSource,
+        private val trendDataSource: GithubDataSource
 ) : GithubDataSource {
 
     var cachedRepos: LinkedHashMap<String, Repo> = LinkedHashMap()
@@ -17,6 +19,18 @@ class GithubRepository(
      * has package local visibility so it can be accessed from tests.
      */
     var cacheIsDirty = false
+
+    override fun getTrendRepos(callback: GithubDataSource.LoadTrendReposCallback) {
+        trendDataSource.getTrendRepos(object : GithubDataSource.LoadTrendReposCallback {
+            override fun onTrendReposLoaded(repos: List<Repo>) {
+                callback.onTrendReposLoaded(repos)
+            }
+
+            override fun onDataNotAvailable() {
+                callback.onDataNotAvailable()
+            }
+        })
+    }
 
     override fun getRepos(searchQuery: String, page: Int, callback: GithubDataSource.LoadReposCallback) {
         if (cacheIsDirty) {
@@ -203,9 +217,10 @@ class GithubRepository(
          */
         @JvmStatic
         fun getInstance(githubRemoteDataSource: GithubDataSource,
-                        githubLocalDataSource: GithubDataSource) =
+                        githubLocalDataSource: GithubDataSource,
+                        trendDataSource: GithubDataSource) =
                 INSTANCE ?: synchronized(GithubRepository::class.java) {
-                    INSTANCE ?: GithubRepository(githubRemoteDataSource, githubLocalDataSource)
+                    INSTANCE ?: GithubRepository(githubRemoteDataSource, githubLocalDataSource, trendDataSource)
                             .also { INSTANCE = it }
                 }
 
