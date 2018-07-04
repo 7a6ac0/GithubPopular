@@ -44,6 +44,9 @@ class RepoAdapter(
                     is FavoriteViewModel -> {
                         viewModel.openRepoEvent.value = repo
                     }
+                    is TrendViewModel -> {
+                        viewModel.openRepoEvent.value = repo
+                    }
                 }
             }
 
@@ -67,6 +70,9 @@ class RepoAdapter(
                     is FavoriteViewModel -> {
                         viewModel.updateFavoriteRepo(repo, checked)
                         viewModel.start()
+                    }
+                    is TrendViewModel -> {
+                        viewModel.updateFavoriteRepo(repo, checked)
                     }
                 }
             }

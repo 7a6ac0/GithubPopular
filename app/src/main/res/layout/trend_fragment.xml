@@ -11,52 +11,63 @@
             type="me.tabacowang.githubpopular.popular.TrendViewModel" />
     </data>
 
-    <RelativeLayout
-        android:id="@+id/repoContainer"
+    <me.tabacowang.githubpopular.ScrollChildSwipeRefreshLayout
+        android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical">
+        android:onRefresh="@{viewmodel}"
+        app:refreshing="@{viewmodel.dataLoading}">
 
-        <LinearLayout
-            android:id="@+id/repoLL"
+        <RelativeLayout
+            android:id="@+id/repoContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="@{viewmodel.empty ? View.GONE : View.VISIBLE}">
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
-            <ListView
-                android:id="@+id/repo_list"
-                app:items="@{viewmodel.items}"
+            <LinearLayout
+                android:id="@+id/repoLL"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:layout_below="@+id/repo_search"
+                android:orientation="vertical"
+                android:visibility="@{viewmodel.empty ? View.GONE : View.VISIBLE}">
 
-        <LinearLayout
-            android:id="@+id/noRepo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="vertical"
-            android:visibility="@{viewmodel.empty ? View.VISIBLE : View.GONE}">
+                <ListView
+                    android:id="@+id/repo_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:items="@{viewmodel.items}" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/noRepoIcon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_gravity="center"
-                android:src="@{viewmodel.noRepoIconRes}" />
-
-            <TextView
-                android:id="@+id/noRepoMain"
+            <LinearLayout
+                android:id="@+id/noRepo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@{viewmodel.noRepoLabel}"
-                android:layout_marginBottom="@dimen/list_item_padding"/>
+                android:layout_centerInParent="true"
+                android:orientation="vertical"
+                android:visibility="@{viewmodel.empty ? View.VISIBLE : View.GONE}">
 
-        </LinearLayout>
-    </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/noRepoIcon"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:src="@{viewmodel.noRepoIconRes}" />
+
+                <TextView
+                    android:id="@+id/noRepoMain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@{viewmodel.noRepoLabel}"
+                    android:layout_marginBottom="@dimen/list_item_padding"/>
+
+            </LinearLayout>
+        </RelativeLayout>
+
+    </me.tabacowang.githubpopular.ScrollChildSwipeRefreshLayout>
 </layout>

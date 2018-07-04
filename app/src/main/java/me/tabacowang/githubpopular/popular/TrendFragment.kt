@@ -3,6 +3,7 @@ package me.tabacowang.githubpopular.popular
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,7 @@ class TrendFragment : Fragment() {
         trendFragmentBinding = TrendFragmentBinding.inflate(inflater, container, false).apply {
             viewmodel = (activity as PopularActivity).obtainViewModel(TrendViewModel::class.java)
         }
+        setHasOptionsMenu(true)
         return trendFragmentBinding.root
     }
 
@@ -29,6 +31,7 @@ class TrendFragment : Fragment() {
             it.noRepoLabel.set(getString(R.string.no_trending_repos))
         }
         setupListAdapter()
+        setupRefreshLayout()
     }
 
     override fun onResume() {
@@ -41,6 +44,18 @@ class TrendFragment : Fragment() {
         if (viewModel != null) {
             listAdapter = RepoAdapter(ArrayList(0), viewModel)
             trendFragmentBinding.repoList.adapter = listAdapter
+        }
+    }
+
+    private fun setupRefreshLayout() {
+        trendFragmentBinding.refreshLayout.run {
+            setColorSchemeColors(
+                    ContextCompat.getColor(activity!!, R.color.colorPrimary),
+                    ContextCompat.getColor(activity!!, R.color.colorAccent),
+                    ContextCompat.getColor(activity!!, R.color.colorPrimaryDark)
+            )
+
+            scrollUpChild = trendFragmentBinding.repoList
         }
     }
 

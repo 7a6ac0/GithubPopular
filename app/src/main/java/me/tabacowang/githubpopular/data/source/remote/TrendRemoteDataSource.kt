@@ -24,7 +24,9 @@ object TrendRemoteDataSource : GithubDataSource {
                     .subscribe ({trendResponse ->
                         deleteAllRepos()
                         trendResponse.forEach { repo ->
-                            REPOS_SERVICE_DATA[repo.id] = repo
+                            REPOS_SERVICE_DATA[repo.id] = repo.apply {
+                                searchQuery = "trending"
+                            }
                         }
                         callback.onTrendReposLoaded(Lists.newArrayList(REPOS_SERVICE_DATA.values))
                     }, {

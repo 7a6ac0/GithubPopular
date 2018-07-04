@@ -21,9 +21,20 @@ class GithubRepository(
     var cacheIsDirty = false
 
     override fun getTrendRepos(callback: GithubDataSource.LoadTrendReposCallback) {
+        deleteRepo("trending")
         trendDataSource.getTrendRepos(object : GithubDataSource.LoadTrendReposCallback {
             override fun onTrendReposLoaded(repos: List<Repo>) {
-                callback.onTrendReposLoaded(repos)
+                saveToLocalDataSource(repos)
+                githubLocalDataSource.getRepos("trending", 1, object : GithubDataSource.LoadReposCallback {
+                    override fun onReposLoaded(repos: List<Repo>) {
+                        refreshCache(repos)
+                        callback.onTrendReposLoaded(ArrayList(cachedRepos.values))
+                    }
+
+                    override fun onDataNotAvailable() {
+
+                    }
+                })
             }
 
             override fun onDataNotAvailable() {

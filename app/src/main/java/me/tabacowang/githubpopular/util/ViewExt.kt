@@ -21,12 +21,14 @@ package me.tabacowang.githubpopular.util
 
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModel
 import android.databinding.BindingAdapter
 import android.support.design.widget.Snackbar
 import android.view.View
 import me.tabacowang.githubpopular.ScrollChildSwipeRefreshLayout
 import me.tabacowang.githubpopular.SingleLiveEvent
 import me.tabacowang.githubpopular.popular.PopularViewModel
+import me.tabacowang.githubpopular.popular.TrendViewModel
 
 
 /**
@@ -53,6 +55,15 @@ fun View.setupSnackbar(lifecycleOwner: LifecycleOwner,
  */
 @BindingAdapter("android:onRefresh")
 fun ScrollChildSwipeRefreshLayout.setSwipeRefreshLayoutOnRefreshListener(
-        viewModel: PopularViewModel) {
-    setOnRefreshListener { viewModel.loadRepos(true) }
+        viewModel: ViewModel) {
+    setOnRefreshListener {
+        when(viewModel) {
+            is PopularViewModel -> {
+                viewModel.loadRepos(true)
+            }
+            is TrendViewModel -> {
+                viewModel.start()
+            }
+        }
+    }
 }

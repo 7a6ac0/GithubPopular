@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object GithubServiceFactory {
     private val BASE_URL: String = "https://api.github.com/"
-    private val TREND_URL: String = "http://trending.codehub-app.com/v2/trending"
+    private val TREND_URL: String = "http://trending.codehub-app.com/"
 
     val APIService by lazy { create() }
 

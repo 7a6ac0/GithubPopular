@@ -5,4 +5,6 @@ object GithubSetting {
     const val QUERY = "q"
     const val SORT = "sort"
     const val PAGE = "page"
+
+    const val TREND_REPOSITORIES = "v2/trending"
 }
