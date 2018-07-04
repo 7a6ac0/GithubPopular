@@ -57,7 +57,13 @@ class PopularActivity : AppCompatActivity(), RepoItemNavigator {
                         }
                         return@setOnNavigationItemSelectedListener true
                     }
-                    R.id.navigation_setting -> {
+                    R.id.navigation_trend -> {
+                        if(supportFragmentManager.findFragmentById(R.id.contentFrame) !is TrendFragment) {
+                            TrendFragment.newInstance().let {
+                                replaceFragmentInActivity(it, R.id.contentFrame)
+                            }
+                            setupTrendViewModel()
+                        }
                         return@setOnNavigationItemSelectedListener true
                     }
                 }
@@ -85,6 +91,16 @@ class PopularActivity : AppCompatActivity(), RepoItemNavigator {
 
     private fun setupFavoriteViewModel() {
         viewModel = obtainViewModel(FavoriteViewModel::class.java).apply {
+            openRepoEvent.observe(this@PopularActivity, Observer<Repo> { repo ->
+                if (repo != null) {
+                    openRepoDetails(repo.id, repo.fullName)
+                }
+            })
+        }
+    }
+
+    private fun setupTrendViewModel() {
+        viewModel = obtainViewModel(TrendViewModel::class.java).apply {
             openRepoEvent.observe(this@PopularActivity, Observer<Repo> { repo ->
                 if (repo != null) {
                     openRepoDetails(repo.id, repo.fullName)

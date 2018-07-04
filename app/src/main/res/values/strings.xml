@@ -2,9 +2,10 @@
     <string name="app_name">GithubPopular</string>
     <string name="popular_repos">Popular</string>
     <string name="favorite_repos">Favorite</string>
-    <string name="setting">Setting</string>
+    <string name="trend">Trend</string>
 
     <string name="no_repos">Sorry, there\'s no Repos!</string>
+    <string name="no_trending_repos">Sorry, there\'s no Trending Repos!</string>
     <string name="no_favorite_repos">You don\'t have favorite Repos!</string>
     <string name="not_exist_repo">This Repo doesn\'t exist!</string>
     <string name="repo_search">Search</string>

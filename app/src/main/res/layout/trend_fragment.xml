@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+
+        <variable
+            name="viewmodel"
+            type="me.tabacowang.githubpopular.popular.TrendViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/repoContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/repoLL"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="@{viewmodel.empty ? View.GONE : View.VISIBLE}">
+
+            <ListView
+                android:id="@+id/repo_list"
+                app:items="@{viewmodel.items}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/noRepo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:visibility="@{viewmodel.empty ? View.VISIBLE : View.GONE}">
+
+            <ImageView
+                android:id="@+id/noRepoIcon"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:src="@{viewmodel.noRepoIconRes}" />
+
+            <TextView
+                android:id="@+id/noRepoMain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@{viewmodel.noRepoLabel}"
+                android:layout_marginBottom="@dimen/list_item_padding"/>
+
+        </LinearLayout>
+    </RelativeLayout>
+</layout>
