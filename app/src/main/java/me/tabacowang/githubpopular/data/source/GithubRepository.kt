@@ -25,8 +25,8 @@ class GithubRepository(
         trendDataSource.getTrendRepos(object : GithubDataSource.LoadTrendReposCallback {
             override fun onTrendReposLoaded(repos: List<Repo>) {
                 saveToLocalDataSource(repos)
-                githubLocalDataSource.getRepos("trending", 1, object : GithubDataSource.LoadReposCallback {
-                    override fun onReposLoaded(repos: List<Repo>) {
+                githubLocalDataSource.getTrendRepos(object : GithubDataSource.LoadTrendReposCallback {
+                    override fun onTrendReposLoaded(repos: List<Repo>) {
                         refreshCache(repos)
                         callback.onTrendReposLoaded(ArrayList(cachedRepos.values))
                     }

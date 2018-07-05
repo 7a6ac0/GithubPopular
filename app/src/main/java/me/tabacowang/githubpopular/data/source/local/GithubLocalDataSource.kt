@@ -24,7 +24,17 @@ class GithubLocalDataSource private constructor(
     }
 
     override fun getTrendRepos(callback: GithubDataSource.LoadTrendReposCallback) {
+        appExecutors.diskIO.execute {
+            val repos = githubDao.getRepos("trending")
+            appExecutors.mainThread.execute {
+                if (repos.isEmpty()) {
+                    callback.onDataNotAvailable()
+                } else {
+                    callback.onTrendReposLoaded(repos)
+                }
+            }
 
+        }
     }
 
     override fun getRepos(searchQuery: String, page: Int, callback: GithubDataSource.LoadReposCallback) {

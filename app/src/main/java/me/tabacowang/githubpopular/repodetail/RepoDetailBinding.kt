@@ -5,7 +5,7 @@ import android.webkit.WebView
 
 object RepoDetailBinding {
     @BindingAdapter("app:loadUrl")
-    @JvmStatic fun setURL(webView: WebView, url: String) {
+    @JvmStatic fun setURL(webView: WebView, url: String?) {
         with(webView) {
             loadUrl(url)
         }
