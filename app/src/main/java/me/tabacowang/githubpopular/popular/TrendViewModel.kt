@@ -27,8 +27,8 @@ class TrendViewModel(
     val empty = ObservableBoolean(false)
     val snackbarMessage = SingleLiveEvent<Int>()
 
-    fun start() {
-        loadTrendRepos()
+    fun start(forceUpdate: Boolean) {
+        loadTrendRepos(forceUpdate)
     }
 
     fun updateFavoriteRepo(repo: Repo, isFavorite: Boolean) {
@@ -41,8 +41,12 @@ class TrendViewModel(
         repo.isFavorite = isFavorite
     }
 
-    private fun loadTrendRepos() {
+    private fun loadTrendRepos(forceUpdate: Boolean) {
         dataLoading.set(true)
+
+        if (forceUpdate) {
+            githubRepository.refreshRepos()
+        }
 
         githubRepository.getTrendRepos(object : GithubDataSource.LoadTrendReposCallback {
             override fun onTrendReposLoaded(repos: List<Repo>) {

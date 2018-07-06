@@ -21,7 +21,24 @@ class GithubRepository(
     var cacheIsDirty = false
 
     override fun getTrendRepos(callback: GithubDataSource.LoadTrendReposCallback) {
-        deleteRepo("trending")
+        if (cacheIsDirty) {
+            deleteRepo("trending")
+            getTrendReposFromDataSource(callback)
+        } else {
+            githubLocalDataSource.getTrendRepos(object : GithubDataSource.LoadTrendReposCallback {
+                override fun onTrendReposLoaded(repos: List<Repo>) {
+                    refreshCache(repos)
+                    callback.onTrendReposLoaded(ArrayList(cachedRepos.values))
+                }
+
+                override fun onDataNotAvailable() {
+                    getTrendReposFromDataSource(callback)
+                }
+            })
+        }
+    }
+
+    private fun getTrendReposFromDataSource(callback: GithubDataSource.LoadTrendReposCallback) {
         trendDataSource.getTrendRepos(object : GithubDataSource.LoadTrendReposCallback {
             override fun onTrendReposLoaded(repos: List<Repo>) {
                 saveToLocalDataSource(repos)
@@ -39,6 +56,7 @@ class GithubRepository(
 
             override fun onDataNotAvailable() {
                 callback.onDataNotAvailable()
+                cacheIsDirty = false
             }
         })
     }

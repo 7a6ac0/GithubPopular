@@ -36,7 +36,7 @@ class TrendFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        trendFragmentBinding.viewmodel?.start()
+        trendFragmentBinding.viewmodel?.start(false)
     }
 
     private fun setupListAdapter() {

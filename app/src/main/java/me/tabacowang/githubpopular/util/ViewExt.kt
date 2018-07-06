@@ -62,7 +62,7 @@ fun ScrollChildSwipeRefreshLayout.setSwipeRefreshLayoutOnRefreshListener(
                 viewModel.loadRepos(true)
             }
             is TrendViewModel -> {
-                viewModel.start()
+                viewModel.start(true)
             }
         }
     }
