@@ -19,9 +19,6 @@ class PopularViewModel(
         private val githubRepository: GithubRepository
 ) : AndroidViewModel(context) {
 
-    private val isDataLoadingError = ObservableBoolean(false)
-    private val context: Context = context.applicationContext //Application Context to avoid leaks.
-
     internal val openRepoEvent = SingleLiveEvent<Repo>()
 
     val searchQuery = ObservableField<String>("")
@@ -74,7 +71,6 @@ class PopularViewModel(
                 val searchResult = RepoSearchResult(searchQuery, page + 1)
 
                 dataLoading.set(false)
-                isDataLoadingError.set(false)
 
                 with(items) {
                     clear()
@@ -85,7 +81,6 @@ class PopularViewModel(
             }
 
             override fun onDataNotAvailable() {
-                isDataLoadingError.set(true)
                 dataLoading.set(false)
             }
         })
@@ -111,7 +106,6 @@ class PopularViewModel(
                 if (showLoadingUI) {
                     dataLoading.set(false)
                 }
-                isDataLoadingError.set(false)
 
                 with(items) {
                     clear()
@@ -132,7 +126,6 @@ class PopularViewModel(
             }
 
             override fun onDataNotAvailable() {
-                isDataLoadingError.set(true)
                 if (showLoadingUI) {
                     dataLoading.set(false)
                 }
